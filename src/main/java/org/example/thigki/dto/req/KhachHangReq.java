@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KhachHangReq {
     @NotBlank
+    @Pattern(regexp = "KH\\d{5}", message = "Mã KH phải có dạng KHxxxxx")
     private String maKH;
     @NotBlank
     private String tenKH;
