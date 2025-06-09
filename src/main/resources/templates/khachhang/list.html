@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách máy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .dataTables_filter label { font-weight: 500; }
+        .btn-action {
+            margin-right: 6px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 p-0">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
+        <main class="col-md-10 ms-sm-auto col-lg-10 px-4 py-4">
+            <h2 class="mb-4">Danh sách khách hàng </h2>
+            <div class="card shadow">
+                <div class="card-body">
+                    <table id="khachHangTable" class="table table-bordered table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Mã Khách hàng</th>
+                            <th>Tên Khách Hàng</th>
+                            <th>Địa chỉ</th>
+                            <th>Số điện thoại</th>
+                            <th>Địa chỉ Email</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="khachhang : ${listKhach}">
+                            <td th:text="${khachhang.maKH}"></td>
+                            <td th:text="${khachhang.tenKH}"></td>
+                            <td th:text="${khachhang.diaChi}"></td>
+                            <td th:text="${khachhang.soDienThoai}"></td>
+                            <td th:text="${khachhang.email}"></td>
+                            <td class="text-center">
+                                <a th:href="@{'/khachhang/edit/' + ${khachhang.maKH}}" class="btn btn-warning btn-sm btn-action" title="Sửa">
+                                    <i class="bi bi-pencil-square"></i> Sửa
+                                </a>
+                                <button
+                                        class="btn btn-danger btn-sm btn-action delete-btn"
+                                        th:attr="data-makh=${khachhang.maKH}"
+                                        title="Xóa">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+
+
+<!-- Bootstrap JS, jQuery, DataTables -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<!-- Bootstrap icons (nếu muốn có icon đẹp cho nút) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+<script>
+    $(document).ready(function () {
+        // Khởi tạo DataTables
+        $('#khachHangTable').DataTable({
+            "pageLength": 2,
+            "language": {
+                "search": "Tìm kiếm:",
+                "lengthMenu": "Hiển thị _MENU_ dòng",
+                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ dòng",
+                "paginate": {
+                    "previous": "Trước",
+                    "next": "Sau"
+                },
+                "zeroRecords": "Không tìm thấy dữ liệu phù hợp"
+            },
+            "columnDefs": [
+                { "orderable": false, "targets": 3 }
+            ]
+        });
+
+        $('#khachHangTable').on('click', '.delete-btn', function () {
+            const maKH = $(this).data('makh');
+            if (confirm('Bạn có chắc chắn muốn xóa khách hàng này?')) {
+                fetch(`/khachhang/api/delete/${maKH}`, {
+                    method: 'DELETE'
+                })
+                    .then(res => {
+                        if (!res.ok) throw new Error();
+                        return res.text();
+                    })
+                    .then(msg => {
+                        alert(msg);
+                        // Xóa hàng trên DataTables
+                        $('#khachHangTable').DataTable().row($(this).parents('tr')).remove().draw();
+                    })
+                    .catch(() => alert('Có lỗi khi xóa!'));
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>

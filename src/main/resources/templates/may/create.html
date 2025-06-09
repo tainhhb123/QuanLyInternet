@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm máy mới</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-0">
+                <div th:replace="fragments/sidebar :: sidebar"></div>
+            </div>
+            <main class="col-md-10 ms-sm-auto col-lg-10 px-4 py-4">
+                <h2 class="mb-4" >Thêm máy mới</h2>
+                <form id="mayForm">
+                    <div class="mb-4">
+                        <label class="form-label">Mã máy:</label>
+                        <input type="text" class="form-control" id="maMay" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" >Vị trí:</label>
+                        <input class="form-control" type="text" id="viTri" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Trạng thái:</label>
+                        <input class="form-control" type="text" id="trangThai" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Thêm máy</button>
+                </form>
+                <div id="result"></div>
+            </main>
+
+
+        </div>
+    </div>
+
+<script>
+    document.getElementById('mayForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const may = {
+            maMay: document.getElementById('maMay').value,
+            viTri: document.getElementById('viTri').value,
+            trangThai: document.getElementById('trangThai').value
+        };
+
+        fetch('/may/api/create', { // dùng path ngắn để khỏi bị CORS nếu cùng server
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(may)
+        })
+            .then(async response => {
+                if (response.ok) {
+                    const text = await response.text();
+                    document.getElementById('result').textContent = text;
+                } else {
+                    const errors = await response.json();
+                    if (Array.isArray(errors)) {
+                        document.getElementById('result').textContent =
+                            errors.map(e => e.defaultMessage).join('; ');
+                    } else {
+                        document.getElementById('result').textContent = 'Lỗi không xác định!';
+                    }
+                }
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = 'Có lỗi khi gọi API!';
+            });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạo mới dịch vụ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .sidebar { min-height: 100vh; }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar bên trái -->
+        <div class="col-md-2 p-0">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
+        <!-- Nội dung bên phải -->
+        <main class="col-md-10 ms-sm-auto col-lg-10 px-4 py-4">
+            <h2 class="mb-4">Tạo mới dịch vụ</h2>
+            <form id="dichVuForm">
+                <div class="mb-3">
+                    <label class="form-label">Mã dịch vụ</label>
+                    <input type="text" class="form-control" id="maDV" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tenDV" class="form-label">Tên dịch vụ</label>
+                    <input type="text" class="form-control" id="tenDV" required>
+                </div>
+                <div class="mb-3">
+                    <label for="donViTinh" class="form-label">Đơn vị tính</label>
+                    <input type="text" class="form-control" id="donViTinh" required>
+                </div>
+                <div class="mb-3">
+                    <label for="donGia" class="form-label">Đơn giá</label>
+                    <input type="number" class="form-control" id="donGia" required>
+                </div>
+                <button type="submit" class="btn btn-success">Lưu dịch vụ</button>
+            </form>
+            <div id="result" class="mt-3"></div>
+        </main>
+    </div>
+</div>
+<script>
+    document.getElementById('dichVuForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const dichvu = {
+            maDV: document.getElementById('maDV').value,
+            tenDV: document.getElementById('tenDV').value,
+            donViTinh: document.getElementById('donViTinh').value,
+            donGia: document.getElementById('donGia').value
+        };
+
+        fetch('/dichvu/api/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dichvu)
+        })
+            .then(async response => {
+                if (response.ok) {
+                    const text = await response.text();
+                    document.getElementById('result').textContent = text;
+                } else {
+                    const errors = await response.json();
+                    if (Array.isArray(errors)) {
+                        document.getElementById('result').textContent =
+                            errors.map(e => e.defaultMessage).join('; ');
+                    } else {
+                        document.getElementById('result').textContent = 'Lỗi không xác định!';
+                    }
+                }
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = 'Có lỗi khi gọi API!';
+            });
+    });
+</script>
+</body>
+</html>

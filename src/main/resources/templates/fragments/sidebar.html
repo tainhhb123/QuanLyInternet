@@ -1,0 +1,16 @@
+<!-- resources/templates/fragments/sidebar.html -->
+<div th:fragment="sidebar">
+    <nav class="sidebar bg-dark" style="min-height: 100vh;">
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/may/create}">1. Tạo mới máy</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/khachhang/create}">2. Tạo mới khách hàng</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/dichvu/create}">3. Tạo mới dịch vụ</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/may/list}">4. Danh sách máy</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/khachhang/list}">5. Danh sách khách hàng</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/dichvu/list}">6. Danh sách dịch vụ</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/sudungmay/create}">7. Đăng ký sử dụng máy</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/sudungdichvu/create}">8. Đăng ký sử dụng dịch vụ</a></li>
+            <li class="nav-item"><a class="nav-link text-white" th:href="@{/thongtinkhachhang}">9. Thông tin sử dụng dịch vụ</a></li>
+        </ul>
+    </nav>
+</div>
